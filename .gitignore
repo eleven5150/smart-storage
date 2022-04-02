@@ -50,3 +50,15 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+firmware/Diplom/Debug/
+
+firmware/Diplom/.settings/
+
+firmware/Diplom/Drivers/
+
+firmware/Diplom/.mxproject
+
+*.launch
+
+firmware/Diplom/Core/Src/syscalls.c
