@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -99,7 +99,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   uint8_t status;
-  uint8_t sakBuff[2];
+  uint8_t *pSakBuff;
   uint8_t cardBuff[MFRC522_MAX_LEN];
   uint8_t sizeRC;
   uint8_t serialNum[4];
@@ -110,90 +110,88 @@ int main(void)
                                 {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF},};
   while (1)
   {
+      pSakBuff = (uint8_t) malloc(sizeof(*pSakBuff)*16);
       MFRC522_Init();
-      HAL_Delay(100);
+      HAL_Delay(20);
       status = MI_ERR;
-      status = MFRC522_Request(PICC_REQIDL, sakBuff);
+      status = MFRC522_Request(PICC_REQIDL, pSakBuff);
       if (status == MI_OK)
       {
-          DEBUG_PRINT(DEBUG_PRINT_INFO, "SAK: 0x%02X, 0x%02X\r\n", sakBuff[1], sakBuff[0]);
+          DEBUG_PRINT(DEBUG_PRINT_INFO, "SAK: 0x%02X, 0x%02X\r\n", pSakBuff[1], pSakBuff[0]);
       }
-      else
-      {
-          DEBUG_PRINT(DEBUG_PRINT_INFO, "SAK: ----  ----\r\n");
-      }
+      free(pSakBuff);
 
       // Anti-collision, return the card's 4-byte serial number
-      status = MFRC522_Anticoll(serialNum);
-      if (status == MI_OK)
-      {
-          DEBUG_PRINT
-          (
-              DEBUG_PRINT_INFO,
-              "CN: %x%x%x%x\r\n",
-              serialNum[0],
-              serialNum[1],
-              serialNum[2],
-              serialNum[3]
-          );
-      }
-      else
-      {
-          DEBUG_PRINT(DEBUG_PRINT_INFO, "CN: --------\r\n");
-      }
-
-      // Election card, return capacity
-      sizeRC = MFRC522_SelectTag(serialNum);
-      if (sizeRC != 0)
-      {
-          DEBUG_PRINT(DEBUG_PRINT_INFO, "CS: %d\r\n", sizeRC);
-      }
-      else
-      {
-          DEBUG_PRINT(DEBUG_PRINT_INFO, "CS: -\r\n");
-      }
-
-      // Card reader
-      status = MFRC522_Auth(PICC_AUTHENT1A, 11, sectorKeyA[2], serialNum);
-      if (status == MI_OK)
-      {
-          // Read data
-          status = MFRC522_Read(11, cardBuff);
-              if (status == MI_OK)
-              {
-                  DEBUG_PRINT
-                  (
-                      DEBUG_PRINT_INFO,
-                      "%02X %02X %02X %02X %02X %02X %02X %02X\r\n",
-                      cardBuff[0],
-                      cardBuff[1],
-                      cardBuff[2],
-                      cardBuff[3],
-                      cardBuff[4],
-                      cardBuff[5],
-                      cardBuff[6],
-                      cardBuff[7]
-                  );
-                  DEBUG_PRINT
-                  (
-                      DEBUG_PRINT_INFO,
-                      "%02X %02X %02X %02X %02X %02X %02X %02X\r\n",
-                      cardBuff[8],
-                      cardBuff[9],
-                      cardBuff[10],
-                      cardBuff[11],
-                      cardBuff[12],
-                      cardBuff[13],
-                      cardBuff[14],
-                      cardBuff[15]
-                  );
-              }
-      }
-      else
-      {
-          DEBUG_PRINT(DEBUG_PRINT_INFO, "-- -- -- -- -- -- -- --\r\n");
-      }
-
+//      status = MFRC522_Anticoll(serialNum);
+//      if (status == MI_OK)
+//      {
+//          DEBUG_PRINT
+//          (
+//              DEBUG_PRINT_INFO,
+//              "CN: %x%x%x%x\r\n",
+//              serialNum[0],
+//              serialNum[1],
+//              serialNum[2],
+//              serialNum[3]
+//          );
+//      }
+//      else
+//      {
+//          DEBUG_PRINT(DEBUG_PRINT_INFO, "CN: --------\r\n");
+//      }
+//
+//      // Election card, return capacity
+//      sizeRC = MFRC522_SelectTag(serialNum);
+//      if (sizeRC != 0)
+//      {
+//          DEBUG_PRINT(DEBUG_PRINT_INFO, "CS: %d\r\n", sizeRC);
+//      }
+//      else
+//      {
+//          DEBUG_PRINT(DEBUG_PRINT_INFO, "CS: -\r\n");
+//      }
+//
+//      // Card reader
+//      status = MFRC522_Auth(PICC_AUTHENT1A, 11, sectorKeyA[2], serialNum);
+//      if (status == MI_OK)
+//      {
+//          // Read data
+//          status = MFRC522_Read(11, cardBuff);
+//              if (status == MI_OK)
+//              {
+//                  DEBUG_PRINT
+//                  (
+//                      DEBUG_PRINT_INFO,
+//                      "%02X %02X %02X %02X %02X %02X %02X %02X\r\n",
+//                      cardBuff[0],
+//                      cardBuff[1],
+//                      cardBuff[2],
+//                      cardBuff[3],
+//                      cardBuff[4],
+//                      cardBuff[5],
+//                      cardBuff[6],
+//                      cardBuff[7]
+//                  );
+//                  DEBUG_PRINT
+//                  (
+//                      DEBUG_PRINT_INFO,
+//                      "%02X %02X %02X %02X %02X %02X %02X %02X\r\n",
+//                      cardBuff[8],
+//                      cardBuff[9],
+//                      cardBuff[10],
+//                      cardBuff[11],
+//                      cardBuff[12],
+//                      cardBuff[13],
+//                      cardBuff[14],
+//                      cardBuff[15]
+//                  );
+//              }
+//      }
+//      else
+//      {
+//          DEBUG_PRINT(DEBUG_PRINT_INFO, "-- -- -- -- -- -- -- --\r\n");
+//      }
+//
       MFRC522_Halt();
       MFRC522_AntennaOff();
 

@@ -2,6 +2,7 @@
 
 #include "stm32f1xx_hal.h"
 #include "rc522.h"
+#include "stdlib.h"
 
 
 extern SPI_HandleTypeDef hspi2;
@@ -89,14 +90,17 @@ void MFRC522_ClearBitMask(uint8_t reg, uint8_t mask){
 	MFRC522_WriteRegister(reg, MFRC522_ReadRegister(reg) & (~mask));
 }
 
-uint8_t MFRC522_Request(uint8_t reqMode, uint8_t* TagType) {
+uint8_t MFRC522_Request(uint8_t reqMode, uint8_t* respData) {
 	uint8_t status;  
 	uint16_t backBits;																			// The received data bits
+	uint8_t* sendData;
+	sendData = (uint8_t) malloc(sizeof(uint8_t)*16);
 
 	MFRC522_WriteRegister(MFRC522_REG_BIT_FRAMING, 0x07);		// TxLastBists = BitFramingReg[2..0]
-	TagType[0] = reqMode;
-	status = MFRC522_ToCard(PCD_TRANSCEIVE, TagType, 1, TagType, &backBits);
+	sendData[0] = reqMode;
+	status = MFRC522_ToCard(PCD_TRANSCEIVE, sendData, 1, respData, &backBits);
 	if ((status != MI_OK) || (backBits != 0x10)) status = MI_ERR;
+	free(sendData);
 	return status;
 }
 
@@ -132,7 +136,7 @@ uint8_t MFRC522_ToCard(uint8_t command, uint8_t* sendData, uint8_t sendLen, uint
 	// Writing data to the FIFO
 	for (i = 0; i < sendLen; i++)
 	    MFRC522_WriteRegister(MFRC522_REG_FIFO_DATA, sendData[i]);
-	DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] FIFO DATA: 0x%X\r\n", MFRC522_ReadRegister(MFRC522_REG_FIFO_DATA));
+	//DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] cmdReq -> 0x%X\r\n", MFRC522_ReadRegister(MFRC522_REG_FIFO_DATA));
 
 	// Execute the command
 	MFRC522_WriteRegister(MFRC522_REG_COMMAND, command);
@@ -141,24 +145,23 @@ uint8_t MFRC522_ToCard(uint8_t command, uint8_t* sendData, uint8_t sendLen, uint
 	    MFRC522_SetBitMask(MFRC522_REG_BIT_FRAMING, 0x80);		// StartSend=1,transmission of data starts
 
 	// Waiting to receive data to complete
-    i = 5000;   // i according to the clock frequency adjustment, the operator M1 card maximum waiting time 25ms
-    IRQAnsw = 0;
-    HAL_Delay(1000);
+    i = 2000;   // i according to the clock frequency adjustment, the operator M1 card maximum waiting time 25ms
     do {
         // CommIrqReg[7..0]
         // Set1 TxIRq RxIRq IdleIRq HiAlerIRq LoAlertIRq ErrIRq TimerIRq
         IRQAnsw = MFRC522_ReadRegister(MFRC522_REG_COMM_IRQ);
         i--;
     } while ((i!=0) && !(IRQAnsw&0x01) && !(IRQAnsw&waitIRq));
-    DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] IRQ Reg: 0x%X\r\n", IRQAnsw);
 
-//	MFRC522_ClearBitMask(MFRC522_REG_BIT_FRAMING, 0x80);																// StartSend=0
 
-	if (1)  {
+
+	MFRC522_ClearBitMask(MFRC522_REG_BIT_FRAMING, 0x80);																// StartSend=0
+
+	if (i != 0)  {
 		if (!(MFRC522_ReadRegister(MFRC522_REG_ERROR) & 0x1B)) {
 			status = MI_OK;
-//			if (IRQAnsw & irqEn & 0x01)
-//			    status = MI_NOTAGERR;
+			if (IRQAnsw & irqEn & 0x01)
+			    status = MI_NOTAGERR;
 			if (command == PCD_TRANSCEIVE) {
 				FIFOLevel = MFRC522_ReadRegister(MFRC522_REG_FIFO_LEVEL);
 				lastBits = MFRC522_ReadRegister(MFRC522_REG_CONTROL) & 0x07;
@@ -166,15 +169,16 @@ uint8_t MFRC522_ToCard(uint8_t command, uint8_t* sendData, uint8_t sendLen, uint
 				    *backLen = (FIFOLevel-1)*8+lastBits;
 				else
 				    *backLen = FIFOLevel*8;
-				FIFOLevel++;
-			    DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] FIFO level: 0x%X\r\n", FIFOLevel);
+				if (FIFOLevel == 0)
+				    FIFOLevel = 1;
+//			    DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] queueSize -> %d\r\n", FIFOLevel);
 				if (FIFOLevel > MFRC522_MAX_LEN)
 				    FIFOLevel = MFRC522_MAX_LEN;
 				for (i = 0; i < FIFOLevel; i++)
 				{
 				    backData[i] = MFRC522_ReadRegister(MFRC522_REG_FIFO_DATA);		// Reading the received data in FIFO
-	                DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] Back data byte 0x%X: %X\r\n", i, backData[i]);
 				}
+//			    DEBUG_PRINT(DEBUG_PRINT_TRACE, "[DEBUG] IRQ reg: 0x%X\r\n", IRQAnsw);
 			}
 		} else status = MI_ERR;
 	}
