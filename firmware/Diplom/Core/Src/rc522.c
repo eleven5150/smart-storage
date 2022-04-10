@@ -93,14 +93,14 @@ void MFRC522_ClearBitMask(uint8_t reg, uint8_t mask){
 uint8_t MFRC522_Request(uint8_t reqMode, uint8_t* respData) {
 	uint8_t status;  
 	uint16_t backBits;																			// The received data bits
-	uint8_t* sendData;
-	sendData = (uint8_t) malloc(sizeof(uint8_t)*16);
+	uint8_t* pSendData;
+	pSendData = (uint8_t *) malloc(sizeof(uint8_t)*16);
 
 	MFRC522_WriteRegister(MFRC522_REG_BIT_FRAMING, 0x07);		// TxLastBists = BitFramingReg[2..0]
-	sendData[0] = reqMode;
-	status = MFRC522_ToCard(PCD_TRANSCEIVE, sendData, 1, respData, &backBits);
+	pSendData[0] = reqMode;
+	status = MFRC522_ToCard(PCD_TRANSCEIVE, pSendData, 1, respData, &backBits);
 	if ((status != MI_OK) || (backBits != 0x10)) status = MI_ERR;
-	free(sendData);
+	free(pSendData);
 	return status;
 }
 
@@ -191,16 +191,19 @@ uint8_t MFRC522_Anticoll(uint8_t* serNum) {
 	uint8_t i;
 	uint8_t serNumCheck = 0;
 	uint16_t unLen;
+    uint8_t* pSendData;
 
+    pSendData = (uint8_t *) malloc(sizeof(pSendData)*16);
 	MFRC522_WriteRegister(MFRC522_REG_BIT_FRAMING, 0x00);												// TxLastBists = BitFramingReg[2..0]
-	serNum[0] = PICC_ANTICOLL;
-	serNum[1] = 0x20;
-	status = MFRC522_ToCard(PCD_TRANSCEIVE, serNum, 2, serNum, &unLen);
+	pSendData[0] = PICC_ANTICOLL;
+	pSendData[1] = 0x20;
+	status = MFRC522_ToCard(PCD_TRANSCEIVE, pSendData, 2, serNum, &unLen);
 	if (status == MI_OK) {
 		// Check card serial number
 		for (i = 0; i < 4; i++) serNumCheck ^= serNum[i];
 		if (serNumCheck != serNum[i]) status = MI_ERR;
 	}
+	free(pSendData);
 	return status;
 } 
 
@@ -232,14 +235,19 @@ uint8_t MFRC522_SelectTag(uint8_t* serNum) {
 	uint8_t status;
 	uint8_t size;
 	uint16_t recvBits;
-	uint8_t buffer[9]; 
+	uint8_t *pBackData;
+    uint8_t* pSendData;
 
-	buffer[0] = PICC_SElECTTAG;
-	buffer[1] = 0x70;
-	for (i = 0; i < 5; i++) buffer[i+2] = *(serNum+i);
-	MFRC522_CalculateCRC(buffer, 7, &buffer[7]);		//??
-	status = MFRC522_ToCard(PCD_TRANSCEIVE, buffer, 9, buffer, &recvBits);
-	if ((status == MI_OK) && (recvBits == 0x18)) size = buffer[0]; else size = 0;
+    pSendData = (uint8_t *) malloc(sizeof(pSendData)*16);
+    pBackData = (uint8_t *) malloc(sizeof(pBackData)*16);
+    pSendData[0] = PICC_SElECTTAG;
+    pSendData[1] = 0x70;
+	for (i = 0; i < 5; i++) pSendData[i+2] = *(serNum+i);
+	MFRC522_CalculateCRC(pSendData, 7, &pSendData[7]);		//??
+	status = MFRC522_ToCard(PCD_TRANSCEIVE, pSendData, 9, pBackData, &recvBits);
+	if ((status == MI_OK) && (recvBits == 0x18)) size = pBackData[0]; else size = 0;
+	free(pSendData);
+	free(pBackData);
 	return size;
 }
 
@@ -247,15 +255,24 @@ uint8_t MFRC522_Auth(uint8_t authMode, uint8_t BlockAddr, uint8_t* Sectorkey, ui
 	uint8_t status;
 	uint16_t recvBits;
 	uint8_t i;
-	uint8_t buff[12]; 
+    uint8_t *pBackData;
+    uint8_t* pSendData;
 
+    pSendData = (uint8_t *) malloc(sizeof(pSendData)*16);
+    pBackData = (uint8_t *) malloc(sizeof(pBackData)*16);
 	// Verify the command block address + sector + password + card serial number
-	buff[0] = authMode;
-	buff[1] = BlockAddr;
-	for (i = 0; i < 6; i++) buff[i+2] = *(Sectorkey+i);
-	for (i=0; i<4; i++) buff[i+8] = *(serNum+i);
-	status = MFRC522_ToCard(PCD_AUTHENT, buff, 12, buff, &recvBits);
-	if ((status != MI_OK) || (!(MFRC522_ReadRegister(MFRC522_REG_STATUS2) & 0x08))) status = MI_ERR;
+    pSendData[0] = authMode;
+    pSendData[1] = BlockAddr;
+	for (i = 0; i < 6; i++)
+	    pSendData[i+2] = *(Sectorkey+i);
+	for (i=0; i<4; i++)
+	    pSendData[i+8] = *(serNum+i);
+
+	status = MFRC522_ToCard(PCD_AUTHENT, pSendData, 12, pBackData, &recvBits);
+	if ((status != MI_OK) || (!(MFRC522_ReadRegister(MFRC522_REG_STATUS2) & 0x08)))
+	    status = MI_ERR;
+    free(pSendData);
+    free(pBackData);
 	return status;
 }
 
