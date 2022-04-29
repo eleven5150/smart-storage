@@ -52,3 +52,7 @@ Mkfile.old
 dkms.conf
 
 firmware/Diplom/.mxproject
+
+firmware/Diplom/.settings/
+
+firmware/Diplom/Drivers/
