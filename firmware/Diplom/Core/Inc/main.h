@@ -32,7 +32,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "rc522.h"
+#include "stdio.h"
+#include "retarget.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -60,7 +63,20 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SPI1_CS_Pin GPIO_PIN_4
 #define SPI1_CS_GPIO_Port GPIOA
+#define LED_Pin GPIO_PIN_3
+#define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+
+/* DEBUG */
+#define     DEBUG_PRINT_TRACE                   3
+#define     DEBUG_PRINT_INFO                    2
+#define     DEBUG_PRINT_ERROR                   1
+#define     DEBUG_PRINT_NONE                    0
+/* Current debug lvl */
+#define DEBUG_PRINT_LVL                         DEBUG_PRINT_TRACE
+/* Debug output */
+#define DEBUG_PRINT(lvl,fmt, ...) \
+    do { if(DEBUG_PRINT_LVL >= lvl) printf(fmt, ##__VA_ARGS__); } while(0)
 
 /* USER CODE END Private defines */
 

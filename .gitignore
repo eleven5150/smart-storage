@@ -56,3 +56,7 @@ firmware/Diplom/.mxproject
 firmware/Diplom/.settings/
 
 firmware/Diplom/Drivers/
+
+firmware/Diplom/Debug/
+
+firmware/Diplom/Diplom Debug.launch
