@@ -88,8 +88,8 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_USART2_UART_Init();
-  rfidStatus_t status;
   /* USER CODE BEGIN 2 */
+  rfidStatus_t status = MI_ERR;
   RetargetInit(&huart2);
   MFRC522_Init();
   DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] LedStripStorage started!\r\n");
