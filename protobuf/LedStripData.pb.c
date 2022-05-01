@@ -6,25 +6,25 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(LedStripData, LedStripData, AUTO)
+PB_BIND(LedStripData_t, LedStripData_t, AUTO)
 
 
-PB_BIND(RgbData, RgbData, AUTO)
+PB_BIND(RgbData_t, RgbData_t, AUTO)
 
 
-PB_BIND(Respond, Respond, AUTO)
+PB_BIND(Respond_t, Respond_t, AUTO)
 
 
-PB_BIND(Item, Item, AUTO)
+PB_BIND(Item_t, Item_t, AUTO)
 
 
-PB_BIND(Resistor, Resistor, AUTO)
+PB_BIND(Resistor_t, Resistor_t, AUTO)
 
 
-PB_BIND(Capacitor, Capacitor, AUTO)
+PB_BIND(Capacitor_t, Capacitor_t, AUTO)
 
 
-PB_BIND(BJT, BJT, AUTO)
+PB_BIND(BJT_t, BJT_t, AUTO)
 
 
 

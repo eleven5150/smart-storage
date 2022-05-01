@@ -4,7 +4,12 @@ uint8_t BLOCK_KEY[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 rfidStatus_t RFID_PrepareConnect(uint8_t *pSerialNum)
 {
+
     rfidStatus_t status = MI_ERR;
+    if (pSerialNum == NULL)
+    {
+        return status;
+    }
 
     MFRC522_Init();
     HAL_Delay(20);
@@ -119,7 +124,7 @@ rfidStatus_t RFID_ReadFullMem(void)
     return status;
 }
 
-rfidStatus_t RFID_ReadSectorData(uint8_t sectorNum)
+rfidStatus_t RFID_ReadSectorData(uint8_t sectorNum, uint8_t *pData)
 {
     rfidStatus_t status = MI_ERR;
 
@@ -129,38 +134,41 @@ rfidStatus_t RFID_ReadSectorData(uint8_t sectorNum)
         return status;
     }
 
+    if (pData == NULL)
+    {
+        DEBUG_PRINT(DEBUG_PRINT_ERROR, "[ERROR] Empty data\r\n");
+        return status;
+    }
+
     uint8_t *pSerialNum;
     pSerialNum = (uint8_t *) malloc(sizeof(*pSerialNum)*16);
 
     status = RFID_PrepareConnect(pSerialNum);
     if (status == MI_OK)
     {
-        uint8_t *pCardBuff;
-        pCardBuff = (uint8_t *) malloc(sizeof(*pCardBuff)*16);
-
-        uint8_t blockNum = (sectorNum + 1) * 4 - 1;
+        uint8_t blockNum = (sectorNum + 1) * 4 - 2;
 
         DEBUG_PRINT(DEBUG_PRINT_INFO, "Sector number 0x%02X\r\n", sectorNum);
-        for(uint8_t idx = 4; idx>0 ;idx--)
+        for(uint8_t idx = 3; idx>0 ;idx--)
         {
             status = MFRC522_Auth(PICC_AUTHENT1A, blockNum, BLOCK_KEY, pSerialNum);
             if (status == MI_OK)
             {
-                status = MFRC522_Read(blockNum, pCardBuff);
+                status = MFRC522_Read(blockNum, pData);
                 if (status == MI_OK)
                 {
                     DEBUG_PRINT(DEBUG_PRINT_INFO, "0x%02X   ", blockNum);
 
                     for (int idx = 0;idx<16;idx++)
                     {
-                        DEBUG_PRINT(DEBUG_PRINT_INFO, "%02X ", pCardBuff[idx]);
+                        DEBUG_PRINT(DEBUG_PRINT_INFO, "%02X ", pData[idx]);
                     }
                     DEBUG_PRINT(DEBUG_PRINT_INFO,"\r\n");
                 }
             }
             blockNum--;
+            pData += 16;
         }
-        free(pCardBuff);
     }
     free(pSerialNum);
 
@@ -172,6 +180,11 @@ rfidStatus_t RFID_ReadSectorData(uint8_t sectorNum)
 rfidStatus_t RFID_WriteSectorData(uint8_t sectorNum, uint8_t *pData)
 {
     rfidStatus_t status = MI_ERR;
+    if (pData == NULL)
+    {
+        DEBUG_PRINT(DEBUG_PRINT_ERROR, "[ERROR] Empty data\r\n");
+        return status;
+    }
 
     if (sectorNum < 1 || sectorNum > 15)
     {
@@ -247,6 +260,30 @@ rfidStatus_t RFID_ResetAllSectorsData(void)
     RFID_CloseConnect();
 
 
+    return status;
+}
+
+rfidStatus_t RFID_WriteBasicData(void)
+{
+    rfidStatus_t status = MI_ERR;
+    Proto TxProto = {0, 0, {0}};
+    Item_t TxComponent = Item_t_init_default;
+    Resistor_t TxResistor = Resistor_t_init_default;
+
+    TxComponent.type = RESISTOR;
+    TxResistor.partNumber = 2;
+    TxResistor.amount = 3;
+    TxResistor.maxVoltage = 4;
+    TxResistor.package = 5;
+    TxResistor.power = 6;
+    TxResistor.resistance = 7;
+    TxResistor.tolerance = 8;
+    pb_ostream_t TxStream = pb_ostream_from_buffer(TxProto.Data, sizeof(TxProto.Data));
+    TxProto.status = pb_encode(&TxStream, Item_t_fields, &TxComponent);
+    TxProto.status = pb_encode(&TxStream, Resistor_t_fields, &TxResistor);
+    TxProto.messageLength = TxStream.bytes_written;
+
+    status = RFID_WriteSectorData(1, TxProto.Data);
     return status;
 }
 

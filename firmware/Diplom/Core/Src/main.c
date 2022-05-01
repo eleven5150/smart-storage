@@ -65,9 +65,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-    struct testData_t testData[3] = {{0xDE, 0xAD, 0xBE, 0xEF, 0xBA, 0xAD, 0xF0, 0x0D, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF},
-                                     {0xDE, 0xAD, 0xBE, 0xEF, 0xBA, 0xAD, 0xF0, 0x0D, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF},
-                                     {0xDE, 0xAD, 0xBE, 0xEF, 0xBA, 0xAD, 0xF0, 0x0D, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -93,18 +91,23 @@ int main(void)
   rfidStatus_t status;
   /* USER CODE BEGIN 2 */
   RetargetInit(&huart2);
-  DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] Led Strip Inited\r\n");
   MFRC522_Init();
-  DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] MFRC522 Inited\r\n");
+  DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] LedStripStorage started!\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  status = RFID_WriteSectorData(1, &testData);
+  uint8_t *pRxData;
+  pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
+  memset(pRxData, 0, 48);
+  status = RFID_ReadSectorData(1, pRxData);
+
+  for (int byte = 0;byte<48;byte++)
+  {
+      DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] Byte number 0x%02X -> %02X\r\n", byte, pRxData[byte]);
+  }
   while (1)
   {
-      status = RFID_ReadFullMem();
-      status = RFID_ResetAllSectorsData();
       status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
 
