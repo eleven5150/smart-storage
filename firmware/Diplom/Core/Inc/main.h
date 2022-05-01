@@ -35,7 +35,9 @@ extern "C" {
 #include "rc522.h"
 #include "stdio.h"
 #include "retarget.h"
-#include <string.h>
+#include "string.h"
+#include "stdlib.h"
+#include "rfid.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -73,7 +75,7 @@ void Error_Handler(void);
 #define     DEBUG_PRINT_ERROR                   1
 #define     DEBUG_PRINT_NONE                    0
 /* Current debug lvl */
-#define DEBUG_PRINT_LVL                         DEBUG_PRINT_TRACE
+#define DEBUG_PRINT_LVL                         DEBUG_PRINT_INFO
 /* Debug output */
 #define DEBUG_PRINT(lvl,fmt, ...) \
     do { if(DEBUG_PRINT_LVL >= lvl) printf(fmt, ##__VA_ARGS__); } while(0)

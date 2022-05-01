@@ -7,13 +7,13 @@
 
 // SPI CS define
 //#define SPI_I2S_FLAG_BSY	((uint16_t)0x0080)
-#define cs_reset() 					HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET)
-#define cs_set() 					HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET)
+#define cs_reset() 		HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET)
+#define cs_set() 		HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET)
 
 // Status enumeration, Used with most functions
-#define MI_OK													0
-#define MI_NOTAGERR										1
-#define MI_ERR												2
+#define MI_OK           0
+#define MI_NOTAGERR		1
+#define MI_ERR			2
 
 // MFRC522 Commands
 #define PCD_IDLE											0x00		// NO action; Cancel the current command
