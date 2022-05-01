@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+message LedStripData 
+{ 
+	uint32 boardNumber = 1;
+	uint32 stripNumber = 2;
+	uint32 startLedNumber = 3;
+	uint32 endLedNumber = 4;
+	RgbData Colour = 5;
+}
+
+message RgbData {
+	uint32 red = 1;
+	uint32 green = 2;
+	uint32 blue = 3;
+}
+
+message Respond {
+	uint32 code = 1;
+}
