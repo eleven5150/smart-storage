@@ -140,6 +140,8 @@ rfidStatus_t RFID_ReadSectorData(uint8_t sectorNum, uint8_t *pData)
         return status;
     }
 
+    memset(pData, 0, 48);
+
     uint8_t *pSerialNum;
     pSerialNum = (uint8_t *) malloc(sizeof(*pSerialNum)*16);
 

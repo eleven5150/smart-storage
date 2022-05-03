@@ -38,6 +38,7 @@ extern "C" {
 #include "string.h"
 #include "stdlib.h"
 #include "rfid.h"
+#include "wifi.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

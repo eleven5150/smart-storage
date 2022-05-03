@@ -55,7 +55,43 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+char ESP_RxBuffer[MAX_MSG_LEN] = {0};
 
+bool ESP_ComReceived = false;
+char ESP_CharBuff[1] = {0};
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart==&huart1)
+  {
+   UART1_RxCpltCallback();
+  }
+}
+
+
+void UART1_RxCpltCallback(void)
+{
+    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] CharBuff -> %c\r\n", ESP_CharBuff[0]);
+    uint8_t pos = strlen(ESP_RxBuffer);         //Вычисляем позицию свободной ячейки
+
+    ESP_RxBuffer[pos] = ESP_CharBuff[0];             //Считываем содержимое регистра данных
+
+    if (ESP_RxBuffer[pos]== 0x0A)                         //Если это символ конца строки
+    {
+        DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] EXIT\r\n");
+        ESP_ComReceived = true;                 //- выставляем флаг приёма строки
+        return;                             //- и выходим
+    }
+    HAL_UART_Receive_IT(&huart1, (uint8_t*)ESP_CharBuff, 1);
+    return;
+}
+
+void ESP_RxMessageHandler(void)
+{
+    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", ESP_RxBuffer);
+    memset(ESP_RxBuffer, 0, MAX_MSG_LEN);
+    ESP_ComReceived = false;
+}
 /* USER CODE END 0 */
 
 /**
@@ -88,31 +124,32 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_USART2_UART_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  rfidStatus_t status = MI_ERR;
-  RetargetInit(&huart2);
-  MFRC522_Init();
-  DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] LedStripStorage started!\r\n");
+    rfidStatus_t status = MI_ERR;
+    RetargetInit(&huart2);
+    MFRC522_Init();
+    DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] LedStripStorage started!\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint8_t *pRxData;
-  pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
-  memset(pRxData, 0, 48);
-  status = RFID_ReadSectorData(1, pRxData);
+    uint8_t *pRxData;
+    pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
 
-  for (int byte = 0;byte<48;byte++)
-  {
-      DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] Byte number 0x%02X -> %02X\r\n", byte, pRxData[byte]);
-  }
-  while (1)
-  {
-      status = RFID_ReadFullMem();
+    while (1)
+    {
+        if (ESP_ComReceived)
+        {
+            ESP_RxMessageHandler();
+        }
+        HAL_UART_Receive_IT(&huart1, (uint8_t*)ESP_CharBuff, 1);
+        status = RFID_ReadSectorData(1, pRxData);
+        status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+    }
   /* USER CODE END 3 */
 }
 
@@ -124,6 +161,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -148,6 +186,12 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
   }
