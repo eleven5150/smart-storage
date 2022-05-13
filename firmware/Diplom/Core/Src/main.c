@@ -19,7 +19,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -55,43 +57,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-char ESP_RxBuffer[MAX_MSG_LEN] = {0};
 
-bool ESP_ComReceived = false;
-char ESP_CharBuff[1] = {0};
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  if(huart==&huart1)
-  {
-   UART1_RxCpltCallback();
-  }
-}
-
-
-void UART1_RxCpltCallback(void)
-{
-    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] CharBuff -> %c\r\n", ESP_CharBuff[0]);
-    uint8_t pos = strlen(ESP_RxBuffer);         //Вычисляем позицию свободной ячейки
-
-    ESP_RxBuffer[pos] = ESP_CharBuff[0];             //Считываем содержимое регистра данных
-
-    if (ESP_RxBuffer[pos]== 0x0A)                         //Если это символ конца строки
-    {
-        DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] EXIT\r\n");
-        ESP_ComReceived = true;                 //- выставляем флаг приёма строки
-        return;                             //- и выходим
-    }
-    HAL_UART_Receive_IT(&huart1, (uint8_t*)ESP_CharBuff, 1);
-    return;
-}
-
-void ESP_RxMessageHandler(void)
-{
-    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", ESP_RxBuffer);
-    memset(ESP_RxBuffer, 0, MAX_MSG_LEN);
-    ESP_ComReceived = false;
-}
 /* USER CODE END 0 */
 
 /**
@@ -124,7 +90,9 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_USART2_UART_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
     rfidStatus_t status = MI_ERR;
     RetargetInit(&huart2);
@@ -136,19 +104,24 @@ int main(void)
   /* USER CODE BEGIN WHILE */
     uint8_t *pRxData;
     pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
+    stream_t local_stream;
+    char* dma_buf = (char *) malloc(sizeof(char)*(ESP_RX_BUFFER_SIZE + 1));
+    stream_t* stream = stream_init(&local_stream, dma_buf, ESP_RX_BUFFER_SIZE);
+
+    HAL_UART_Receive_DMA(&huart1, (uint8_t*) stream->buf, stream->size);
+
+    volatile int cur_remain = 0;
+    volatile int prv_remain = stream->size;
 
     while (1)
     {
-        if (ESP_ComReceived)
-        {
-            ESP_RxMessageHandler();
-        }
-        HAL_UART_Receive_IT(&huart1, (uint8_t*)ESP_CharBuff, 1);
+
         status = RFID_ReadSectorData(1, pRxData);
-        status = RFID_ReadFullMem();
+//        status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+        ESP_MessageHandler(stream, &cur_remain, &prv_remain);
     }
   /* USER CODE END 3 */
 }

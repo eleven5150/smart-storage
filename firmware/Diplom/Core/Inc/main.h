@@ -60,6 +60,8 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void UART1_RxCpltCallback(void);
+void ESP_RxMessageHandler(void);
 
 /* USER CODE END EFP */
 
