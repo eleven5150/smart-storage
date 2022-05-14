@@ -39,6 +39,7 @@ extern "C" {
 #include "stdlib.h"
 #include "rfid.h"
 #include "wifi.h"
+#include "LedController.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

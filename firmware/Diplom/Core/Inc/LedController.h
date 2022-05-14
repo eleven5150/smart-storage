@@ -1,18 +1,16 @@
-/*
- * strip.h
- *
- *  Created on: Aug 16, 2021
- *      Author: kirSM
- */
-
 #ifndef INC_LEDCONTROLLER_H_
 #define INC_LEDCONTROLLER_H_
-
-#include <TcpServer.h>
+#include "stdio.h"
+#include "retarget.h"
+#include "string.h"
+#include "stdlib.h"
+#include "usart.h"
+#include "stm32f0xx_hal.h"
 #include "tim.h"
 #include "dma.h"
+
 //Strip configuration
-#define MAX_LED 150
+#define MAX_LED 8
 #define USE_BRIGHTNESS 0
 #define RESERVE 50
 
@@ -38,10 +36,10 @@
 #define FIRST_CELL 1
 
 void LedController_SetLED (int LEDnum, int Red, int Green, int Blue);
-void LedController_SetBrightness (int brightness);
+//void LedController_SetBrightness (int brightness);
 void LedController_WS2812Send (void);
 void LedController_OnLed (int ledNumber);
-void LedController_OffAllLeds (void);
+//void LedController_OffAllLeds (void);
 void LedController_OnX (int x);
 void LedController_OnY (int y);
 
