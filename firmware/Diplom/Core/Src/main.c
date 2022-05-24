@@ -112,7 +112,9 @@ int main(void)
 
     volatile int cur_remain = 0;
     volatile int prv_remain = stream->size;
-    LedController_OnLed(3);
+//    LedController_OffAllLeds();
+    LedController_OnX(2);
+    LedController_OnY(2);
     while (1)
     {
 

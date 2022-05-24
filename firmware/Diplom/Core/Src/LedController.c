@@ -1,17 +1,14 @@
-#include <LedController.h>
-
-extern TIM_HandleTypeDef htim1;
-extern DMA_HandleTypeDef hdma_tim1_ch1;
+#include "LedController.h"
 
 uint8_t ledData[MAX_LED][AMOUNT_OF_DATA] = {0};
 
-bool dataSentFlag = false;
+//bool dataSentFlag = false;
 uint16_t pwmData[(WS2812_DATA_BIT_WIDTH * MAX_LED) + RESERVE] = {0};
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
     HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
-    dataSentFlag = true;
+//    dataSentFlag = true;
 }
 
 void LedController_SetLED (int ledNum, int red, int green, int blue)
@@ -22,42 +19,26 @@ void LedController_SetLED (int ledNum, int red, int green, int blue)
     ledData[ledNum][BLUE_INTENSITY] = blue;
 }
 
-//void LedController_SetBrightness (int brightness)  // 0-45
-//{
-//    if (brightness > MAX_BRIGHTNESS) brightness = MAX_BRIGHTNESS;
-//    for (int i = 0; i < MAX_LED; i++)
-//    {
-//        ledMod[i][NUMBER_OF_LED] = ledData[i][NUMBER_OF_LED];
-//        for (int j = GREEN_INTENSITY; j < AMOUNT_OF_DATA; j++)
-//        {
-//            float angle = RIGHT_ANGLE - brightness;  // in degrees
-//            angle = angle * PI / UNFOLDED_CORNER;  // in rad
-//            ledMod[i][j] = (ledData[i][j]) / (tan(angle));
-//        }
-//    }
-//
-//}
 
 void LedController_WS2812Send (void)
 {
     uint32_t indx = 0;
-    uint32_t color = 0;
+    uint32_t color;
 
     for (int i = 0; i < MAX_LED; i++)
     {
 
         color = ((ledData[i][1]<<SHIFT_FOR_GEEN_LED) | (ledData[i][2]<<SHIFT_FOR_RED_LED) | (ledData[i][3]));
 
-
         for (int i = WS2812_DATA_BIT_WIDTH - 1; i >= 0; i--)
         {
-            if (color & (1<<i))
+            if (color&(1<<i))
             {
-                pwmData[indx] = RIGHT_ANGLE - 30;  // 2/3 of 90
+                pwmData[indx] = 40;  // 2/3 of 90
             }
             else
             {
-                pwmData[indx] = RIGHT_ANGLE - 60;  // 1/3 of 90
+                pwmData[indx] = 20;  // 1/3 of 90
             }
             indx++;
         }
@@ -71,45 +52,39 @@ void LedController_WS2812Send (void)
     }
 
     HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)pwmData, indx);
-    while (!dataSentFlag){
-
-    };
-    dataSentFlag = false;
+//    while (!dataSentFlag){
+//
+//    };
+//    dataSentFlag = false;
 }
 
 
 void LedController_OnLed (int ledNumber){
+    if (ledNumber <= MAX_LED)
+    {
+        LedController_SetLED(ledNumber, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY, BLUE_COLOR_INTENSITY);
+    }
+
+    LedController_WS2812Send();
+    HAL_Delay(TIME_FOR_SENDING_DATA);
+    HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
+}
+
+void LedController_OffAllLeds(void){
     for (int m = 0; m < MAX_LED; m++)
     {
-
-        if (m == ledNumber)
-        {
-            LedController_SetLED(m, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY, MAX_COLOUR_INTENSITY);
-        }
+        LedController_SetLED(m, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY);
     }
-//    if (USE_BRIGHTNESS)
-//        {
-//            LedController_SetBrightness(MAX_BRIGHTNESS);
-//        }
     LedController_WS2812Send();
     HAL_Delay(TIME_FOR_SENDING_DATA);
 }
 
-//void LedController_OffAllLeds (void){
-//    for (int m = 0; m < MAX_LED; m++){
-//        LedController_SetLED(m, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY);
-//    }
-//    if (USE_BRIGHTNESS)
-//    {
-//        LedController_SetBrightness(MIN_BRIGHTNESS);
-//    }
-//    LedController_WS2812Send();
-//    HAL_Delay(TIME_FOR_SENDING_DATA);
-//}
-
-void LedController_OnX (int xLedCoordinate){
-    if(xLedCoordinate % 2 == UNEVEN_CELL){
-        switch(xLedCoordinate){
+void LedController_OnX (int xLedCoordinate)
+{
+    if(xLedCoordinate % 2 == UNEVEN_CELL)
+    {
+        switch(xLedCoordinate)
+        {
             case(FIRST_CELL):
                 LedController_OnLed(21);
                 LedController_OnLed(20);
@@ -127,8 +102,11 @@ void LedController_OnX (int xLedCoordinate){
                 LedController_OnLed(4);
                 break;
         }
-    }else{ //even cell
-        switch(xLedCoordinate){
+    }
+    else
+    { //even cell
+        switch(xLedCoordinate)
+        {
             case(FIRST_CELL+1):
                 LedController_OnLed(FIRST_LED+17);
                 LedController_OnLed(FIRST_LED+16);
@@ -147,8 +125,8 @@ void LedController_OnX (int xLedCoordinate){
                 LedController_OnLed(FIRST_LED+1);
                 LedController_OnLed(FIRST_LED);
                 break;
+        }
     }
-}
 }
 
 void LedController_OnY (int yLedCoordinate){

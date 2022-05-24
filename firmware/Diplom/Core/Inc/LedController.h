@@ -10,7 +10,7 @@
 #include "dma.h"
 
 //Strip configuration
-#define MAX_LED 8
+#define MAX_LED 53
 #define USE_BRIGHTNESS 0
 #define RESERVE 50
 
@@ -24,6 +24,7 @@
 #define SHIFT_FOR_RED_LED 8
 #define TIME_FOR_SENDING_DATA 50
 #define MAX_COLOUR_INTENSITY 255
+#define BLUE_COLOR_INTENSITY 31
 #define MIN_COLOUR_INTENSITY 0
 #define AMOUNT_OF_DATA 4
 #define NUMBER_OF_LED 0
@@ -36,11 +37,12 @@
 #define FIRST_CELL 1
 
 void LedController_SetLED (int LEDnum, int Red, int Green, int Blue);
-//void LedController_SetBrightness (int brightness);
+void LedController_SetBrightness (int brightness);
 void LedController_WS2812Send (void);
 void LedController_OnLed (int ledNumber);
-//void LedController_OffAllLeds (void);
+void LedController_OffAllLeds (void);
 void LedController_OnX (int x);
 void LedController_OnY (int y);
+
 
 #endif /* INC_LEDCONTROLLER_H_ */
