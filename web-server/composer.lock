@@ -4,27 +4,27 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1823e3206dd9e7d0b69442795248b13e",
+    "content-hash": "52a8e26258ad147cc4f30c24c00ab354",
     "packages": [
         {
             "name": "google/protobuf",
-            "version": "v3.19.1",
+            "version": "v3.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "83fe8edf7469ffdd83cb4b4e62249c154f961b9b"
+                "reference": "68f71264d8816f001177d68ce99d25b28e212d4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/83fe8edf7469ffdd83cb4b4e62249c154f961b9b",
-                "reference": "83fe8edf7469ffdd83cb4b4e62249c154f961b9b",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/68f71264d8816f001177d68ce99d25b28e212d4c",
+                "reference": "68f71264d8816f001177d68ce99d25b28e212d4c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.0"
+                "php": ">=7.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=4.8.0"
+                "phpunit/phpunit": ">=5.0.0"
             },
             "suggest": {
                 "ext-bcmath": "Need to support JSON deserialization"
@@ -47,9 +47,9 @@
             ],
             "support": {
                 "issues": "https://github.com/protocolbuffers/protobuf-php/issues",
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.19.1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.21.1"
             },
-            "time": "2021-10-29T00:36:13+00:00"
+            "time": "2022-05-27T22:57:31+00:00"
         }
     ],
     "packages-dev": [],
@@ -60,5 +60,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

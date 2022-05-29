@@ -7,9 +7,9 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>RgbData</code>
+ * Generated from protobuf message <code>RgbData_t</code>
  */
-class RgbData extends \Google\Protobuf\Internal\Message
+class RgbData_t extends \Google\Protobuf\Internal\Message
 {
     /**
      * Generated from protobuf field <code>uint32 red = 1;</code>

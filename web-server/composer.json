@@ -1,5 +1,5 @@
 {
     "require": {
-        "google/protobuf": "^3.19"
+        "google/protobuf": "^3.21"
     }
 }

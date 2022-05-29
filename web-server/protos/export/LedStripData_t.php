@@ -7,9 +7,9 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>LedStripData</code>
+ * Generated from protobuf message <code>LedStripData_t</code>
  */
-class LedStripData extends \Google\Protobuf\Internal\Message
+class LedStripData_t extends \Google\Protobuf\Internal\Message
 {
     /**
      * Generated from protobuf field <code>uint32 boardNumber = 1;</code>
@@ -28,7 +28,7 @@ class LedStripData extends \Google\Protobuf\Internal\Message
      */
     protected $endLedNumber = 0;
     /**
-     * Generated from protobuf field <code>.RgbData Colour = 5;</code>
+     * Generated from protobuf field <code>.RgbData_t Colour = 5;</code>
      */
     protected $Colour = null;
 
@@ -42,7 +42,7 @@ class LedStripData extends \Google\Protobuf\Internal\Message
      *     @type int $stripNumber
      *     @type int $startLedNumber
      *     @type int $endLedNumber
-     *     @type \RgbData $Colour
+     *     @type \RgbData_t $Colour
      * }
      */
     public function __construct($data = NULL) {
@@ -139,8 +139,8 @@ class LedStripData extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.RgbData Colour = 5;</code>
-     * @return \RgbData|null
+     * Generated from protobuf field <code>.RgbData_t Colour = 5;</code>
+     * @return \RgbData_t|null
      */
     public function getColour()
     {
@@ -158,13 +158,13 @@ class LedStripData extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.RgbData Colour = 5;</code>
-     * @param \RgbData $var
+     * Generated from protobuf field <code>.RgbData_t Colour = 5;</code>
+     * @param \RgbData_t $var
      * @return $this
      */
     public function setColour($var)
     {
-        GPBUtil::checkMessage($var, \RgbData::class);
+        GPBUtil::checkMessage($var, \RgbData_t::class);
         $this->Colour = $var;
 
         return $this;

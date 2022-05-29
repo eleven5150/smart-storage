@@ -16,20 +16,55 @@ class LedStripData
         }
         $pool->internalAddGeneratedFile(
             '
-Ì
-LedStripData.proto"Ä
-LedStripData
+∂
+LedStripData.proto"Ñ
+LedStripData_t
 boardNumber (
 stripNumber (
 startLedNumber (
-endLedNumber (
-Colour (2.RgbData"3
-RgbData
+endLedNumber (
+Colour (2
+.RgbData_t"5
+	RgbData_t
 red (
 green (
-blue ("
-Respond
-code (bproto3'
+blue ("
+	Respond_t
+code ("
+Item_t
+type ("ã
+
+Resistor_t
+
+partNumber (
+package (
+
+resistance (
+	tolerance (
+power (
+
+maxVoltage (
+amount ("ê
+Capacitor_t
+
+partNumber (
+package (
+capacitance (
+	tolerance (
+nullPlug (
+
+maxVoltage (
+amount ("Ö
+BJT_t
+
+partNumber (
+package (
+	structure (
+
+vColEmiMax (
+	colCurMax (
+power (
+amount (bproto3'
         , true);
 
         static::$is_initialized = true;

@@ -7,14 +7,14 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>Respond</code>
+ * Generated from protobuf message <code>Item_t</code>
  */
-class Respond extends \Google\Protobuf\Internal\Message
+class Item_t extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>uint32 code = 1;</code>
+     * Generated from protobuf field <code>uint32 type = 1;</code>
      */
-    protected $code = 0;
+    protected $type = 0;
 
     /**
      * Constructor.
@@ -22,7 +22,7 @@ class Respond extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type int $code
+     *     @type int $type
      * }
      */
     public function __construct($data = NULL) {
@@ -31,23 +31,23 @@ class Respond extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>uint32 code = 1;</code>
+     * Generated from protobuf field <code>uint32 type = 1;</code>
      * @return int
      */
-    public function getCode()
+    public function getType()
     {
-        return $this->code;
+        return $this->type;
     }
 
     /**
-     * Generated from protobuf field <code>uint32 code = 1;</code>
+     * Generated from protobuf field <code>uint32 type = 1;</code>
      * @param int $var
      * @return $this
      */
-    public function setCode($var)
+    public function setType($var)
     {
         GPBUtil::checkUint32($var);
-        $this->code = $var;
+        $this->type = $var;
 
         return $this;
     }
