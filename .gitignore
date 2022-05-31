@@ -62,3 +62,7 @@ firmware/Diplom/Debug/
 firmware/Diplom/Diplom Debug.launch
 
 docs/Device/Измерения/
+
+*.log
+
+*.bak
