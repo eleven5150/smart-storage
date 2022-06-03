@@ -207,7 +207,6 @@
                                     Подсветить №<?php echo $record['cell_number']; ?> 
                                 </button>
                             </p>
-                                
                             <!-- Кнопка изменения колличества компонентов -->
                             <p>
                                 <input type="hidden" value="<?php echo $cat['category_name']; ?>" name="category_name">

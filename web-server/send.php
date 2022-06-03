@@ -1,14 +1,15 @@
 <?php
-    require "vendor/autoload.php";
-    require "protos/export/LedStripData_t.php";
-//    require "protos/export/Respond_t.php";
-//    require "protos/export/RgbData_t.php";
-//    require "protos/export/GPBMetadata/LedStripData.php";
+    echo getcwd();
+    require "./vendor/autoload.php";
+    require "./protos/export/LedStripData_t.php";
+    require "./protos/export/Respond_t.php";
+    require "./protos/export/RgbData_t.php";
+    require "./protos/export/GPBMetadata/LedStripData.php";
 
-//    use Google\Protobuf\Internal\InputStream;
-//    use Google\Protobuf\Internal\Message;
+    use Google\Protobuf\Internal\InputStream;
+    use Google\Protobuf\Internal\Message;
 
-    @$newSocket = fsockopen("tcp://192.168.43.252", 333, $errno, $errstr, 1); //open socket
+    @$newSocket = fsockopen("tcp://192.168.43.252", 333, $errno, $errstr, 10); //open socket
     if (!$newSocket) //error condition
     {
         $result = [
@@ -18,7 +19,8 @@
     }
     else
     {
-        //     $transm = new LedStripData_t();
+
+             $transm = new LedStripData_t();
         //     $transmColour = new RgbData_t();
         //     $transm->setBoardNumber($_POST["boardNumber"]);
         //     $transm->setStripNumber($_POST["stripNumber"]);
@@ -52,6 +54,7 @@
         [
             'answer' => "good",
         ];
+        fclose($newSocket);
         echo json_encode($result); // Переводим массив в JSON
     }
 ?>
