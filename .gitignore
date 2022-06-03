@@ -56,3 +56,5 @@ firmware/
 web-server/.idea/
 
 docs/
+
+web-server/vendor/

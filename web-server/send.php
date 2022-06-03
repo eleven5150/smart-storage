@@ -1,5 +1,4 @@
 <?php
-    echo getcwd();
     require "./vendor/autoload.php";
     require "./protos/export/LedStripData_t.php";
     require "./protos/export/Respond_t.php";
@@ -19,19 +18,27 @@
     }
     else
     {
+        foreach ($_POST as $key => $value) {
 
+            echo $key;
+            echo " ->";
+
+            echo $value;
+            echo "       ";
+
+        }
              $transm = new LedStripData_t();
-        //     $transmColour = new RgbData_t();
-        //     $transm->setBoardNumber($_POST["boardNumber"]);
-        //     $transm->setStripNumber($_POST["stripNumber"]);
-        //     $transm->setStartLedNumber($_POST["startLed"]);
-        //     $transm->setEndLedNumber($_POST["endLed"]);
-        //     $transm->setEndLedNumber($_POST["endLed"]);
-        //     $transmColour->setRed($_POST["R"]);
-        //     $transmColour->setGreen($_POST["G"]);
-        //     $transmColour->setBlue($_POST["B"]);
-        //     $transm->setColour($transmColour);
-        //     $serString = $transm->SerializeToString();
+             $transmColour = new RgbData_t();
+//             $transm->setBoardNumber($_POST["boardNumber"]);
+//             $transm->setStripNumber($_POST["stripNumber"]);
+//             $transm->setStartLedNumber($_POST["startLed"]);
+//             $transm->setEndLedNumber($_POST["endLed"]);
+//             $transm->setEndLedNumber($_POST["endLed"]);
+//             $transmColour->setRed($_POST["R"]);
+//             $transmColour->setGreen($_POST["G"]);
+//             $transmColour->setBlue($_POST["B"]);
+//             $transm->setColour($transmColour);
+//             $serString = $transm->SerializeToString();
         fwrite($newSocket, "kek"); // send data to STM32
         //     $received = new Respond();
         //     $received->mergeFromString(fread($newSocket, 4096)); // Respond from STM32

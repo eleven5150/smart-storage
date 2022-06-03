@@ -1,6 +1,7 @@
 <?php
     require "includes/db_connect.php";
     require "includes/config.php";
+    include_once "./vendor/autoload.php";
 ?>
 
 <!doctype html>

@@ -6,7 +6,7 @@
         'db' => array(
             'server' => 'localhost',
             'username' => 'root',
-            'password' => '',
+            'password' => 'root',
             'name' => 'components_db'
         ),
 
