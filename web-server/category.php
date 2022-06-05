@@ -85,9 +85,10 @@
                         
                         while($record = mysqli_fetch_assoc($result_q))
                         {
-                            $result[$counter] = $record['Field']; 
+                            $result[$counter] = $record['Field'];
                             $counter++;
                         }
+                        $counter = 10;
 
             ?>
 
@@ -198,8 +199,8 @@
                             <p>
                                 <input type="hidden" value="<?php echo $record['boardNumber']; ?>" name="boardNumber" id="boardNumber">
                                 <input type="hidden" value="<?php echo $record['stripNumber']; ?>" name="stripNumber" id="stripNumber"> 
-                                <input type="hidden" value="<?php echo $record['startLed']; ?>" name="startLed" id="startLed">
-                                <input type="hidden" value="<?php echo $record['endLed']; ?>" name="endLed" id="endLed">
+                                <input type="hidden" value="<?php echo $record['x_coordinate']; ?>" name="x_coordinate" id="x_coordinate">
+                                <input type="hidden" value="<?php echo $record['y_coordinate']; ?>" name="y_coordinate" id="y_coordinate">
                                 <input type="hidden" value="<?php echo $record['R']; ?>" name="R" id="R">
                                 <input type="hidden" value="<?php echo $record['G']; ?>" name="G" id="G">
                                 <input type="hidden" value="<?php echo $record['B']; ?>" name="B" id="B">
