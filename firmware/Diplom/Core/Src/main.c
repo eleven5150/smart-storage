@@ -112,7 +112,7 @@ int main(void)
 
     volatile int cur_remain = 0;
     volatile int prv_remain = stream->size;
-//    LedController_OffAllLeds();
+    HAL_UART_Transmit_DMA(&huart1, (uint8_t*) "AT\r\n", sizeof("AT\r\n"));
     LedController_OnX(2);
     LedController_OnY(2);
     while (1)
