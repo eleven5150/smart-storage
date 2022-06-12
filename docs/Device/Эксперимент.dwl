@@ -1,3 +1,0 @@
-user
-WIN-AASUERGKO18 
-Sunday, 12 June, 2022  4:44:00 PM
