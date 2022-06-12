@@ -67,6 +67,10 @@ void ESP_RxMessageHandler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define RST_Pin GPIO_PIN_0
+#define RST_GPIO_Port GPIOA
+#define CH_PD_Pin GPIO_PIN_1
+#define CH_PD_GPIO_Port GPIOA
 #define SPI1_CS_Pin GPIO_PIN_4
 #define SPI1_CS_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_3

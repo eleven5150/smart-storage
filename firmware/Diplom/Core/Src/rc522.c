@@ -338,7 +338,7 @@ void MFRC522_AntennaOff(void) {
 
 void MFRC522_Halt(void) {
 	uint16_t unLen;
-	uint8_t buff[4]; 
+	uint8_t buff[16];
 
 	buff[0] = PICC_HALT;
 	buff[1] = 0;

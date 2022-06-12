@@ -46,7 +46,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+char str1[60]={0};
+typedef struct USART_prop{
+  uint8_t usart_buf[60];
+  uint8_t usart_cnt;
+} USART_prop_ptr;
+USART_prop_ptr usartprop;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,7 +62,38 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void string_parse(char* buf_str)
+{
+    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", buf_str);
+}
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+   if (huart->Instance == USART1)
+   {
+       uint8_t b;
+        b = str1[0];
+        //если вдруг случайно превысим длину буфера
+        if (usartprop.usart_cnt>59)
+        {
+          usartprop.usart_cnt=0;
+          HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+          return;
+        }
+        usartprop.usart_buf[usartprop.usart_cnt] = b;
+        if(b==0x0A)
+        {
+          usartprop.usart_buf[usartprop.usart_cnt+1]=0;
+          string_parse((char*)usartprop.usart_buf);
+          usartprop.usart_cnt=0;
+          HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+          return;
+        }
+        usartprop.usart_cnt++;
+        HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+   }
+
+}
 /* USER CODE END 0 */
 
 /**
@@ -98,21 +134,23 @@ int main(void)
     RetargetInit(&huart2);
     MFRC522_Init();
     DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] LedStripStorage started!\r\n");
+
+    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+    HAL_Delay(1000);
+    HAL_GPIO_WritePin(RST_GPIO_Port, RST_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RST_GPIO_Port, RST_Pin, GPIO_PIN_SET);
+    HAL_Delay(1000);
+    HAL_GPIO_WritePin(CH_PD_GPIO_Port, CH_PD_Pin, GPIO_PIN_SET);
+    HAL_Delay(1000);
+    HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"), -1);
+    HAL_Delay(1000);
+    HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CISERVER=1\r\n", strlen("AT+CISERVER=1\r\n"), -1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     uint8_t *pRxData;
     pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
-    stream_t local_stream;
-    char* dma_buf = (char *) malloc(sizeof(char)*(ESP_RX_BUFFER_SIZE + 1));
-    stream_t* stream = stream_init(&local_stream, dma_buf, ESP_RX_BUFFER_SIZE);
-
-    HAL_UART_Receive_DMA(&huart1, (uint8_t*) stream->buf, stream->size);
-
-    volatile int cur_remain = 0;
-    volatile int prv_remain = stream->size;
-    HAL_UART_Transmit_DMA(&huart1, (uint8_t*) "AT\r\n", sizeof("AT\r\n"));
     LedController_OnX(2);
     LedController_OnY(2);
     while (1)
@@ -123,7 +161,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-        ESP_MessageHandler(stream, &cur_remain, &prv_remain);
     }
   /* USER CODE END 3 */
 }
