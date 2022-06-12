@@ -41,8 +41,7 @@ void LedController_SetBrightness (int brightness);
 void LedController_WS2812Send (void);
 void LedController_OnLed (int ledNumber);
 void LedController_OffAllLeds (void);
-void LedController_OnX (int x);
-void LedController_OnY (int y);
+void LedController_OnXY (int xLedCoordinate, int yLedCoordinate);
 
 
 #endif /* INC_LEDCONTROLLER_H_ */

@@ -59,7 +59,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-
+void UART1_RxCpltCallBack(void);
 /* USER CODE BEGIN EFP */
 void UART1_RxCpltCallback(void);
 void ESP_RxMessageHandler(void);

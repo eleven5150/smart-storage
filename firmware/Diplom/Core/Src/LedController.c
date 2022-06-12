@@ -79,7 +79,7 @@ void LedController_OffAllLeds(void){
     HAL_Delay(TIME_FOR_SENDING_DATA);
 }
 
-void LedController_OnX (int xLedCoordinate)
+void LedController_OnXY (int xLedCoordinate, int yLedCoordinate)
 {
     if(xLedCoordinate % 2 == UNEVEN_CELL)
     {
@@ -127,42 +127,39 @@ void LedController_OnX (int xLedCoordinate)
                 break;
         }
     }
-}
-
-void LedController_OnY (int yLedCoordinate){
     if(yLedCoordinate % 2 == UNEVEN_CELL){
-        switch(yLedCoordinate){
-            case(FIRST_CELL):
-                LedController_OnLed(FIRST_LED+22);
-                LedController_OnLed(FIRST_LED+23);
-                LedController_OnLed(FIRST_LED+24);
-                break;
-            case(FIRST_CELL+2):
-                LedController_OnLed(FIRST_LED+27);
-                LedController_OnLed(FIRST_LED+28);
-                LedController_OnLed(FIRST_LED+29);
-                break;
-            case(FIRST_CELL+4):
-                LedController_OnLed(FIRST_LED+32);
-                LedController_OnLed(FIRST_LED+33);
-                LedController_OnLed(FIRST_LED+34);
-                break;
+            switch(yLedCoordinate){
+                case(FIRST_CELL):
+                    LedController_OnLed(FIRST_LED+22);
+                    LedController_OnLed(FIRST_LED+23);
+                    LedController_OnLed(FIRST_LED+24);
+                    break;
+                case(FIRST_CELL+2):
+                    LedController_OnLed(FIRST_LED+27);
+                    LedController_OnLed(FIRST_LED+28);
+                    LedController_OnLed(FIRST_LED+29);
+                    break;
+                case(FIRST_CELL+4):
+                    LedController_OnLed(FIRST_LED+32);
+                    LedController_OnLed(FIRST_LED+33);
+                    LedController_OnLed(FIRST_LED+34);
+                    break;
+                }
+        }else{ //even cell
+            switch(yLedCoordinate){
+                    case(FIRST_CELL+1):
+                        LedController_OnLed(FIRST_LED+25);
+                        LedController_OnLed(FIRST_LED+26);
+                        break;
+                    case(FIRST_CELL+3):
+                        LedController_OnLed(FIRST_LED+30);
+                        LedController_OnLed(FIRST_LED+31);
+                        break;
+                    case(FIRST_CELL+5):
+                        LedController_OnLed(FIRST_LED+35);
+                        LedController_OnLed(FIRST_LED+36);
+                        LedController_OnLed(FIRST_LED+37);
+                        break;
             }
-    }else{ //even cell
-        switch(yLedCoordinate){
-                case(FIRST_CELL+1):
-                    LedController_OnLed(FIRST_LED+25);
-                    LedController_OnLed(FIRST_LED+26);
-                    break;
-                case(FIRST_CELL+3):
-                    LedController_OnLed(FIRST_LED+30);
-                    LedController_OnLed(FIRST_LED+31);
-                    break;
-                case(FIRST_CELL+5):
-                    LedController_OnLed(FIRST_LED+35);
-                    LedController_OnLed(FIRST_LED+36);
-                    LedController_OnLed(FIRST_LED+37);
-                    break;
         }
-    }
 }

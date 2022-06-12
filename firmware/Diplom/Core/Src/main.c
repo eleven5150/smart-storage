@@ -46,12 +46,14 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-char str1[60]={0};
+char str1[250]={0};
 typedef struct USART_prop{
-  uint8_t usart_buf[60];
+  uint8_t usart_buf[250];
   uint8_t usart_cnt;
 } USART_prop_ptr;
-USART_prop_ptr usartprop;
+USART_prop_ptr usartprop = {{0}, 0};
+
+bool ledStripFlag = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,16 +67,24 @@ void SystemClock_Config(void);
 void string_parse(char* buf_str)
 {
     DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", buf_str);
+    if (!strcmp(buf_str, "0,CONNECT\r\n"))
+    {
+        ledStripFlag = true;
+    }
+    if (ledStripFlag)
+    {
+        int coordinates = atoi(buf_str);
+        LedController_OnXY (coordinates / 10, coordinates % 10);
+
+    }
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void UART1_RxCpltCallBack(void)
 {
-   if (huart->Instance == USART1)
-   {
        uint8_t b;
         b = str1[0];
         //если вдруг случайно превысим длину буфера
-        if (usartprop.usart_cnt>59)
+        if (usartprop.usart_cnt>249)
         {
           usartprop.usart_cnt=0;
           HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
@@ -91,8 +101,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         }
         usartprop.usart_cnt++;
         HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
-   }
-
 }
 /* USER CODE END 0 */
 
@@ -134,9 +142,9 @@ int main(void)
     RetargetInit(&huart2);
     MFRC522_Init();
     DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] LedStripStorage started!\r\n");
-
     HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
     HAL_Delay(1000);
+
     HAL_GPIO_WritePin(RST_GPIO_Port, RST_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(RST_GPIO_Port, RST_Pin, GPIO_PIN_SET);
     HAL_Delay(1000);
@@ -144,19 +152,17 @@ int main(void)
     HAL_Delay(1000);
     HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"), -1);
     HAL_Delay(1000);
-    HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CISERVER=1\r\n", strlen("AT+CISERVER=1\r\n"), -1);
+    HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPSERVER=1\r\n", strlen("AT+CIPSERVER=1\r\n"), -1);
+    HAL_Delay(1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     uint8_t *pRxData;
     pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
-    LedController_OnX(2);
-    LedController_OnY(2);
     while (1)
     {
 
-        status = RFID_ReadSectorData(1, pRxData);
 //        status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
 
@@ -210,7 +216,13 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart==&huart1)
+    {
+        UART1_RxCpltCallBack();
+    }
+}
 /* USER CODE END 4 */
 
 /**
