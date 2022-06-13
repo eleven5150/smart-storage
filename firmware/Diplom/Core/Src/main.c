@@ -71,12 +71,6 @@ void string_parse(char* buf_str)
     {
         ledStripFlag = true;
     }
-    if (ledStripFlag)
-    {
-        int coordinates = atoi(buf_str);
-        LedController_OnXY (coordinates / 10, coordinates % 10);
-
-    }
 }
 
 void UART1_RxCpltCallBack(void)
@@ -163,6 +157,13 @@ int main(void)
     while (1)
     {
 
+        if (ledStripFlag && usartprop.usart_buf[0] != (uint8_t)'\r')
+        {
+            int x_coord = atoi((char *)&usartprop.usart_buf[1]);
+            int y_coord = atoi((char *)&usartprop.usart_buf[2]);
+            LedController_OnXY(x_coord, y_coord);
+            ledStripFlag = false;
+        }
 //        status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
 
