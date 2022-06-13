@@ -81,6 +81,7 @@ void LedController_OffAllLeds(void){
 
 void LedController_OnXY (int xLedCoordinate, int yLedCoordinate)
 {
+    LedController_OffAllLeds();
     if(xLedCoordinate % 2 == UNEVEN_CELL)
     {
         switch(xLedCoordinate)

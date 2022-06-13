@@ -54,6 +54,7 @@ typedef struct USART_prop{
 USART_prop_ptr usartprop = {{0}, 0};
 
 bool ledStripFlag = false;
+bool ledStripFlag2 = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,16 +67,20 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void string_parse(char* buf_str)
 {
-    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", buf_str);
+//    DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", buf_str);
     if (!strcmp(buf_str, "0,CONNECT\r\n"))
     {
         ledStripFlag = true;
+    }
+    if (ledStripFlag && !strcmp(buf_str, "\r\n"))
+    {
+        ledStripFlag2 = true;
     }
 }
 
 void UART1_RxCpltCallBack(void)
 {
-       uint8_t b;
+        uint8_t b;
         b = str1[0];
         //если вдруг случайно превысим длину буфера
         if (usartprop.usart_cnt>249)
@@ -154,15 +159,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
     uint8_t *pRxData;
     pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
+    LedController_OnLed(1);
     while (1)
     {
-
-        if (ledStripFlag && usartprop.usart_buf[0] != (uint8_t)'\r')
+        if (ledStripFlag2)
         {
-            int x_coord = atoi((char *)&usartprop.usart_buf[1]);
-            int y_coord = atoi((char *)&usartprop.usart_buf[2]);
+            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", usartprop.usart_buf);
+            char a_x_coord[2] = {(char)usartprop.usart_buf[9], '\0'};
+            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_x_coord -> %s\r\n", a_x_coord);
+            char a_y_coord[2] = {(char)usartprop.usart_buf[10], '\0'};
+            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_y_coord -> %s\r\n", a_y_coord);
+            int x_coord = atoi(a_x_coord);
+            int y_coord = atoi(a_y_coord);
+            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] x_coord -> %d\r\n", x_coord);
+            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] y_coord -> %d\r\n", y_coord);
             LedController_OnXY(x_coord, y_coord);
             ledStripFlag = false;
+            ledStripFlag2 = false;
         }
 //        status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
