@@ -177,7 +177,7 @@ int main(void)
             ledStripFlag = false;
             ledStripFlag2 = false;
         }
-//        status = RFID_ReadFullMem();
+        status = RFID_ReadFullMem();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -83,7 +83,7 @@ void ESP_RxMessageHandler(void);
 #define     DEBUG_PRINT_ERROR                   1
 #define     DEBUG_PRINT_NONE                    0
 /* Current debug lvl */
-#define DEBUG_PRINT_LVL                         DEBUG_PRINT_INFO
+#define DEBUG_PRINT_LVL                         DEBUG_PRINT_TRACE
 /* Debug output */
 #define DEBUG_PRINT(lvl,fmt, ...) \
     do { if(DEBUG_PRINT_LVL >= lvl) printf(fmt, ##__VA_ARGS__); } while(0)
