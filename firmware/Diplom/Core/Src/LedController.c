@@ -70,6 +70,31 @@ void LedController_OnLed (int ledNumber){
     HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
 }
 
+
+void LedController_OffLed (int ledNumber)
+{
+    if (ledNumber <= MAX_LED)
+    {
+        LedController_SetLED(ledNumber, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY, MIN_COLOUR_INTENSITY);
+    }
+
+    LedController_WS2812Send();
+    HAL_Delay(TIME_FOR_SENDING_DATA);
+    HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
+}
+
+
+void LedController_Load(void)
+{
+    LedController_OnLed(0);
+    for (int m = 1; m < MAX_LED; m++)
+        {
+            LedController_OnLed(m);
+            LedController_OnLed(m+1);
+            LedController_OffLed(m-1);
+        }
+}
+
 void LedController_OffAllLeds(void){
     for (int m = 0; m < MAX_LED; m++)
     {

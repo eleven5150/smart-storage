@@ -159,7 +159,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
     uint8_t *pRxData;
     pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
-    LedController_OnLed(1);
+    LedController_OffAllLeds();
+    LedController_Load();
+    LedController_OffAllLeds();
     while (1)
     {
         if (ledStripFlag2)
