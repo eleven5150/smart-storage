@@ -19,7 +19,7 @@ if (!$newSocket) //error condition
     echo json_encode($result);
 } else {
 
-    $send = "rfid";
+    $send = "rf";
     fwrite($newSocket, $send); // send data to STM32
     $data = fread($newSocket, 4096); // Respond from STM32
     if ($data)
