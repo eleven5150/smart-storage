@@ -75,7 +75,7 @@
                     {
                         echo '<h2 class="mt-4">' . $config[$cat['category_name']][$cat['category_name']] . '</h2>';
 
-                        echo '<p><a href="/" class="btn btn-outline-primary btn-sm">На главную страницу</a></p>';
+                        echo '<p><a href="/index.php" class="btn btn-outline-primary btn-sm">На главную страницу</a></p>';
 
                         $sql = "SHOW COLUMNS FROM `$cat[category_name]`"; //запрос на получение имен столбцов из выбранной таблицы
                         $result_q = mysqli_query($connection, $sql);
@@ -180,7 +180,7 @@
                             {
                                 if($result[$i] == 'url')
                                 {
-                                    echo '<td><a href="' . $record[$i] . '" target="_blank" class="btn btn-outline-primary btn-sm">link    </a></td>';
+                                    echo '<td><a href="' . $record[$i] . '" target="_blank" class="btn btn-outline-primary btn-sm">Ссылка    </a></td>';
                                 }
                                 else if($result[$i]== 'amount')
                                 {
@@ -198,19 +198,18 @@
                             <!-- Кнопка подсветки ячейки -->
                             <p>
                                 <input type="hidden" value="<?php echo $record['boardNumber']; ?>" name="boardNumber" id="boardNumber">
-                                <input type="hidden" value="<?php echo $record['stripNumber']; ?>" name="stripNumber" id="stripNumber"> 
-                                <input type="hidden" value="<?php echo $record['x_coordinate']; ?>" name="x_coordinate" id="x_coordinate">
-                                <input type="hidden" value="<?php echo $record['y_coordinate']; ?>" name="y_coordinate" id="y_coordinate">
+                                <input type="hidden" value="<?php echo $record['cell_number']; ?>" name="cell_number" id="cell_number">
                                 <input type="hidden" value="<?php echo $record['R']; ?>" name="R" id="R">
                                 <input type="hidden" value="<?php echo $record['G']; ?>" name="G" id="G">
                                 <input type="hidden" value="<?php echo $record['B']; ?>" name="B" id="B">
+                                <input type="hidden" value="<?php echo $record['id']; ?>" name="id" id="id">
                                 <button class="btn btn-outline-primary btn-sm" type="button" id="btn<?php echo $cou; ?>" value="Подсветить ячейку №<?php echo $record['cell_number']; ?> " onclick="sendAjaxForm('result_form', 'send<?php echo $cou; ?>', 'send.php');"> <!-- кнопка подстветки ячейки, которая при нажатии запускает JS скрипт -->
                                     Подсветить №<?php echo $record['cell_number']; ?> 
                                 </button>
                             </p>
                             <!-- Кнопка изменения колличества компонентов -->
                             <p>
-                                <input type="hidden" value="<?php echo $cat['category_name']; ?>" name="category_name">
+                                <input type="hidden" value="<?php echo $cat['category_name']; ?>" name="category_name" id="category_name">
                                 <div class="input-group input-group-sm mb-3">
                                     <input type="number" class="form-control" name="amount" value="1" id="amount" style="width: 50px">
                                     <button class="btn btn-outline-secondary" type="button" value="add amount" onclick="sendAjaxForm('amountdiv<?php echo $cou; ?>', 'send<?php echo $cou; ?>', 'add.php');"    > <!-- кнопка изменения числа ячеек, которая при нажатии запускает JS скрипт -->

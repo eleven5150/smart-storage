@@ -7,7 +7,8 @@
 <!doctype html>
 <html>
     <head>
-        <script src="jquery-3.6.0.min.js"></script>
+        <script src="jquery-3.6.0.min.js"></script> <!-- библиотека для JS -->
+        <script src="ajax.js"></script> <!-- файл для динамической работы страницы -->
         <script type="text/javascript"> //скрипт обработки динамического импорта файлов
             function hideBtn(){
                 $('#upload').hide();
@@ -53,7 +54,7 @@
         <!-- Custom styles for this template -->
         <link href="starter-template.css" rel="stylesheet">
 
-        <title>Умный склад</title>
+        <title>Управление учетом электронных компонентов</title>
     </head>
 
     <body>
@@ -62,7 +63,7 @@
         
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <main>
-                <h1>Умный склад</h1>
+                <h1>Управление учетом электронных компонентов</h1>
                 <p class="fs-5 col-md-8">Cистема автоматического поиска комплектующих на рабочих местах инженеров-электронщиков</p>
                 <hr class="col-3 col-md-2 mb-5">
                 <div class="row g-5">
@@ -129,23 +130,73 @@
                     <iframe id="hiddenframe" name="hiddenframe" style="width:0px; height:0px; border:0px"></iframe>
                 </div>
 
-                <!--
-                Форма добавления новой категории компонентов
-                <div>
+
+<!--                Форма добавления новой категории компонентов-->
+
                     <form action="/new_category.php" method="post" enctype="multipart/form-data">
-                        <p><strong>Название новой категории компонентов (на русском)</strong><br>
-                        <input type="text" size="40" name="new_cat_ru">
+                        <h2>Добавление новой категории</h2>
+                        <div class="form-group">
+                            <label class="form-label">Название новой категории компонентов (на русском)</label>
+                        <input class="form-control" type="text" size="40" name="new_cat_ru">
                         </p>
-                        <p><strong>Название новой категории компонентов (на английском, без пробелов)</strong><br>
-                        <input type="text" size="40" name="new_cat">
+                                <label class="form-label">Название новой категории компонентов (на английском, без пробелов)</label>
+                        <input class="form-control" type="text" size="40" name="new_cat">
                         </p>
                         <p>
-                        <input type="file" name="uploadfile">
-                        <input type="submit" value="Загрузить">
+                        <input class="form-control" type="file" name="uploadfile">
+                            <p>
+                        <input class="btn btn-primary" type="submit" value="Добавить">
                         </p>
+                        </div>
                     </form>
-                </div>
-                -->
+
+
+                    <div id="result_form"></div>
+                    <form action="/new_component.php" method="post" enctype="multipart/form-data">
+                        <h2>Добавление нового компонента</h2>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="button" id="rfid" value="Добавить из RFID" onclick="sendAjaxForm('result_form', 'rfid', 'rfid.php');">
+                                Добавить из RFID-метки
+                            </button>
+                            <br>
+                            <label class="form-label">Выберите категорию</label>
+                            <select class="form-select" name="cat_id" id="cat_id">
+                                <?php
+                                while($cat = mysqli_fetch_assoc($result)) {
+                                    ?>
+                                    <option value="<?php echo $cat['category_name'] ?>"><?php echo $config[$cat['category_name']][$cat['category_name']]; ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                            <label class="form-label">Наименование компонента</label>
+                            <input class="form-control" type="text" size="40" name="new_cat_ru">
+
+                            <label class="form-label">Номер ячейки</label>
+                            <input class="form-control" type="text" size="40" name="new_cat_ru">
+
+                            <label class="form-label">Корпус</label>
+                            <input class="form-control" type="text" size="40" name="new_cat_ru">
+
+                            <label class="form-label">Количество</label>
+                            <input class="form-control" type="text" size="40" name="new_cat_ru">
+
+                            <label class="form-label">Точность</label>
+                            <input class="form-control" type="text" size="40" name="new_cat_ru">
+
+                            <label class="form-label">Ссылка</label>
+                            <input class="form-control" type="text" size="40" name="new_cat_ru">
+                            <br>
+                            <p>
+                                <input class="btn btn-primary" type="submit" value="Добавить">
+                            </p>
+
+
+                        </div>
+                    </form>
+
+
 
                 <?php
                     mysqli_close($connection);
@@ -154,7 +205,7 @@
             </main>
 
         <footer class="pt-5 my-5 text-muted border-top">
-            Кутаев Кирилл и Рыжов Фёдор для RaccHack &middot; 2021
+            Кутаев Кирилл ИУ4 BMSTU &middot; 2022
         </footer>
     </body>
 </html>

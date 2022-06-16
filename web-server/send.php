@@ -29,8 +29,8 @@
 //             $transmColour->setBlue($_POST["B"]);
 //             $transm->setColour($transmColour);
 //             $serString = $transm->SerializeToString();
-                $xy = $_POST["x_coordinate"] * 10 + $_POST["y_coordinate"];
-             fwrite($newSocket, $xy); // send data to STM32
+                $xy = $_POST["cell_number"];
+                fwrite($newSocket, $xy); // send data to STM32
 //             $received = new Respond_t();
 //             $received->mergeFromString(fread($newSocket, 4096)); // Respond from STM32
 

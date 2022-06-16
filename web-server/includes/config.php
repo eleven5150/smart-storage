@@ -16,7 +16,7 @@
             'electrolytic_capacitors' => 'Электролетические конденсаторы',
             'id' => 'id',
             'cell_number' => 'Номер ячейки',
-            'part_number' => 'Part Number',
+            'part_number' => 'Наименование',
             'package' => 'Корпус',
             'voltage' => 'Макс. напряжение, В',
             'capacitance' => 'Ёмкость, мкФ',
