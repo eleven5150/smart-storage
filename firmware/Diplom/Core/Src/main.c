@@ -159,40 +159,44 @@ int main(void)
   /* USER CODE BEGIN WHILE */
     uint8_t *pRxData;
     pRxData = (uint8_t *) malloc(sizeof(*pRxData)*48);
-    LedController_OffAllLeds();
     LedController_Load();
     LedController_OffAllLeds();
     while (1)
     {
         if (ledStripFlag2)
         {
-            if ((char)usartprop.usart_buf[9] == 'r')
+            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", usartprop.usart_buf);
+            char a_x_coord[2] = {(char)usartprop.usart_buf[9], '\0'};
+            if (!strcmp(a_x_coord, "r"))
             {
+
                 while(status != MI_OK)
                 {
                     status = RFID_ReadFullMem();
-                    DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] Status %d\r\n", status);
-                    HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPSEND=0,1\r\n", strlen("AT+CIPSEND=0,1\r\n"), -1);
-                    HAL_UART_Transmit(&huart1, (uint8_t*)"1\r\n", strlen("1\r\n"), -1);
-                    ledStripFlag = false;
-                    ledStripFlag2 = false;
                 }
+                DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] Status %d\r\n", status);
+                HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPSEND=0,1\r\n", strlen("AT+CIPSEND=0,1\r\n"), -1);
+                HAL_Delay(1000);
+                HAL_UART_Transmit(&huart1, (uint8_t*)"1\r\n", strlen("1\r\n"), -1);
+                HAL_Delay(1000);
+                ledStripFlag = false;
+                ledStripFlag2 = false;
             }
             else
             {
-            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", usartprop.usart_buf);
-            char a_x_coord[2] = {(char)usartprop.usart_buf[9], '\0'};
-            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_x_coord -> %s\r\n", a_x_coord);
-            char a_y_coord[2] = {(char)usartprop.usart_buf[10], '\0'};
-            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_y_coord -> %s\r\n", a_y_coord);
-            int x_coord = atoi(a_x_coord);
-            int y_coord = atoi(a_y_coord);
-            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] x_coord -> %d\r\n", x_coord);
-            DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] y_coord -> %d\r\n", y_coord);
-            LedController_OnXY(x_coord, y_coord);
-            ledStripFlag = false;
-            ledStripFlag2 = false;
+                DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_x_coord -> %s\r\n", a_x_coord);
+                char a_y_coord[2] = {(char)usartprop.usart_buf[10], '\0'};
+                DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_y_coord -> %s\r\n", a_y_coord);
+                int x_coord = atoi(a_x_coord);
+                int y_coord = atoi(a_y_coord);
+                DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] x_coord -> %d\r\n", x_coord);
+                DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] y_coord -> %d\r\n", y_coord);
+                LedController_OnXY(x_coord, y_coord);
+                ledStripFlag = false;
+                ledStripFlag2 = false;
             }
+
+
         }
 
     /* USER CODE END WHILE */
