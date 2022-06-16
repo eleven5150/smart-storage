@@ -265,28 +265,28 @@ rfidStatus_t RFID_ResetAllSectorsData(void)
     return status;
 }
 
-rfidStatus_t RFID_WriteBasicData(void)
-{
-    rfidStatus_t status = MI_ERR;
-    Proto TxProto = {0, 0, {0}};
-    Item_t TxComponent = Item_t_init_default;
-    Resistor_t TxResistor = Resistor_t_init_default;
-
-    TxComponent.type = RESISTOR;
-    TxResistor.partNumber = 2;
-    TxResistor.amount = 3;
-    TxResistor.maxVoltage = 4;
-    TxResistor.package = 5;
-    TxResistor.power = 6;
-    TxResistor.resistance = 7;
-    TxResistor.tolerance = 8;
-    pb_ostream_t TxStream = pb_ostream_from_buffer(TxProto.Data, sizeof(TxProto.Data));
-    TxProto.status = pb_encode(&TxStream, Item_t_fields, &TxComponent);
-    TxProto.status = pb_encode(&TxStream, Resistor_t_fields, &TxResistor);
-    TxProto.messageLength = TxStream.bytes_written;
-
-    status = RFID_WriteSectorData(1, TxProto.Data);
-    return status;
-}
+//rfidStatus_t RFID_WriteBasicData(void)
+//{
+//    rfidStatus_t status = MI_ERR;
+//    Proto TxProto = {0, 0, {0}};
+//    Item_t TxComponent = Item_t_init_default;
+//    Resistor_t TxResistor = Resistor_t_init_default;
+//
+//    TxComponent.type = RESISTOR;
+//    TxResistor.partNumber = 2;
+//    TxResistor.amount = 3;
+//    TxResistor.maxVoltage = 4;
+//    TxResistor.package = 5;
+//    TxResistor.power = 6;
+//    TxResistor.resistance = 7;
+//    TxResistor.tolerance = 8;
+//    pb_ostream_t TxStream = pb_ostream_from_buffer(TxProto.Data, sizeof(TxProto.Data));
+//    TxProto.status = pb_encode(&TxStream, Item_t_fields, &TxComponent);
+//    TxProto.status = pb_encode(&TxStream, Resistor_t_fields, &TxResistor);
+//    TxProto.messageLength = TxStream.bytes_written;
+//
+//    status = RFID_WriteSectorData(1, TxProto.Data);
+//    return status;
+//}
 
 

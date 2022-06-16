@@ -166,6 +166,20 @@ int main(void)
     {
         if (ledStripFlag2)
         {
+            if ((char)usartprop.usart_buf[9] == 'r')
+            {
+                while(status != MI_OK)
+                {
+                    status = RFID_ReadFullMem();
+                    DEBUG_PRINT(DEBUG_PRINT_INFO, "[DEBUG] Status %d\r\n", status);
+                    HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPSEND=0,1\r\n", strlen("AT+CIPSEND=0,1\r\n"), -1);
+                    HAL_UART_Transmit(&huart1, (uint8_t*)"1\r\n", strlen("1\r\n"), -1);
+                    ledStripFlag = false;
+                    ledStripFlag2 = false;
+                }
+            }
+            else
+            {
             DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] %s\r\n", usartprop.usart_buf);
             char a_x_coord[2] = {(char)usartprop.usart_buf[9], '\0'};
             DEBUG_PRINT(DEBUG_PRINT_INFO, "[ESP] a_x_coord -> %s\r\n", a_x_coord);
@@ -178,8 +192,9 @@ int main(void)
             LedController_OnXY(x_coord, y_coord);
             ledStripFlag = false;
             ledStripFlag2 = false;
+            }
         }
-        status = RFID_ReadFullMem();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -249,7 +264,6 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-    DEBUG_PRINT(DEBUG_PRINT_ERROR, "[ERROR] Error_Handler\r\n");
   __disable_irq();
   while (1)
   {
