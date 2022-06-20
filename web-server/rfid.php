@@ -1,6 +1,6 @@
 <?php
 
-include('./includes/db_connect.php');
+require "./includes/config.php";
 require "./vendor/autoload.php";
 require "./protos/export/LedStripData_t.php";
 require "./protos/export/Respond_t.php";
@@ -21,12 +21,19 @@ if (!$newSocket) //error condition
 
     $send = "rf";
     fwrite($newSocket, $send); // send data to STM32
-    $data = fread($newSocket, 4096); // Respond from STM32
+    $data = fread($newSocket, 1); // Respond from STM32
     if ($data)
     {
-//        $sql = "INSERT INTO `resistors`(`cell_number`, `part_number`, `package`, `resistance`, `tolerance`, `power`, `max_voltage`, `amount`, `url`)
-//            VALUES (14,'0402','SMD',10,5,0.625,100,30,'https://www.chipdip.ru/product/0.062w-0402-1-om-1')";
-//        mysqli_query($connection, $sql);
+        $sql = "INSERT INTO `resistors`(`cell_number`, `part_number`, `package`, `resistance`, `tolerance`, `power`, `max_voltage`, `amount`, `url`
+, `boardNumber`, `stripNumber`, `x_coordinate`, `y_coordinate`, `R`, `G`, `B`)
+            VALUES (14,'0402','SMD',10,5,0.625,100,30,'https://www.chipdip.ru/product/0.062w-0402-1-om-1',NULL, NULL, NULL, NULL,NULL,NULL,NULL)";
+        $connection = mysqli_connect(
+            $config['db']['server'],
+            $config['db']['username'],
+            $config['db']['password'],
+            $config['db']['name']
+        );
+        $status = mysqli_query($connection, $sql);
         $result =
             [
                 'answer' => "Добавлено",
