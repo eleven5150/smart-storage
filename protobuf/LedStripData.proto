@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+message LedStripData_t
+{ 
+	uint32 boardNumber = 1;
+	uint32 stripNumber = 2;
+	uint32 startLedNumber = 3;
+	uint32 endLedNumber = 4;
+	RgbData_t Colour = 5;
+}
+
+message RgbData_t {
+	uint32 red = 1;
+	uint32 green = 2;
+	uint32 blue = 3;
+}
+
+message Respond_t {
+	uint32 code = 1;
+}
+
+message Item_t {
+	uint32 type = 1;
+}
+
+message Resistor_t {
+	uint32 partNumber = 1;
+	uint32 package = 2;
+	uint32 resistance = 3;
+	uint32 tolerance = 4;
+	uint32 power = 5;
+	uint32 maxVoltage = 6;
+	uint32 amount = 7;
+}
+
+message Capacitor_t {
+	uint32 partNumber = 1;
+	uint32 package = 2;
+	uint32 capacitance = 3;
+	uint32 tolerance = 4;
+	uint32 nullPlug = 5;
+	uint32 maxVoltage = 6;
+	uint32 amount = 7;
+}
+
+message BJT_t {
+	uint32 partNumber = 1;
+	uint32 package = 2;
+	uint32 structure = 3;
+	uint32 vColEmiMax = 4;
+	uint32 colCurMax = 5;
+	uint32 power = 6;
+	uint32 amount = 7;
+}

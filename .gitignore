@@ -60,6 +60,28 @@ docs/
 web-server/vendor/
 
 cad-src/
+
+firmware/Diplom/.mxproject
+
+firmware/Diplom/.settings/
+
+firmware/Diplom/Drivers/
+
+firmware/Diplom/Debug/
+
+firmware/Diplom/Diplom Debug.launch
+
+docs/Device/Измерения/
+
+*.log
+
+*.bak
+
+web-server/
+
+docs/Device/OldVersions/
+
+cad-src/
 
 cad-src/
 
