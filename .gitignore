@@ -50,3 +50,27 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+docs/
+
+web-server/
+
+firmware/
+
+cad-src/Altium/PCB Demid/
+
+cad-src/Altium/Diplom/__Previews/
+
+cad-src/Altium/Diplom/History/
+
+cad-src/Altium/Diplom/Project Logs for Diplom/
+
+cad-src/Altium/Diplom/Project Outputs for Diplom/Inventor/OldVersions/
+
+cad-src/Altium/Diplom/Project Outputs for Diplom/InventorForScheme/
+
+cad-src/Altium/Diplom/Project Outputs for Diplom/InventorNew/OldVersions/
+
+cad-src/case/OldVersions/
+
+cad-src/case/~Device.dwg.12852.tmp
