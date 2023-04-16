@@ -1,2 +1,2 @@
 # Smart storage
-This project is a bachelor's degree work
+This project is my bachelor's degree work
